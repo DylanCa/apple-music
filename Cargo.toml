@@ -1,8 +1,8 @@
 [package]
 name = "apple-music"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
-description = "A Rust Library to control local Apple Music player"
+description = "A Rust Library to control local Apple Music App"
 license = "MIT"
 keywords = ["apple", "music", "api", "interface"]
 
