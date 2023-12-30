@@ -3,15 +3,27 @@ function run(input) {
     const current_track = Music.currentTrack();
     const track = {};
 
+    artworks = [];
+
+    current_track.artworks().forEach((artwork) => {
+        artworks.push({
+            class: artwork.class(),
+            raw_properties: JSON.stringify(artwork.properties()),
+
+            data: artwork.data(),
+            description: artwork.description(),
+            downloaded: artwork.downloaded(),
+            format: artwork.format(),
+            kind: artwork.kind(),
+            raw_data: artwork.rawData(),
+        });
+    });
+
+    if (artworks.length > 0) {
+        track.artworks = artworks;
+    }
+
     track.album = current_track.album();
-    track.artwork = {
-        data: current_track.artworks()[0].data(),
-        description: current_track.artworks()[0].description(),
-        downloaded: current_track.artworks()[0].downloaded(),
-        format: current_track.artworks()[0].format(),
-        kind: current_track.artworks()[0].kind(),
-        raw_data: current_track.artworks()[0].rawData(),
-    };
     track.album_artist = current_track.albumArtist();
     track.album_disliked = current_track.albumDisliked();
     track.album_loved = current_track.albumLoved();

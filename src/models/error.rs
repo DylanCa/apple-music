@@ -8,6 +8,7 @@ pub enum Error {
     NotPlaying,
     NoData,
     DeserializationFailed,
+    AppCommandFailed,
 }
 
 impl Display for Error {
@@ -16,6 +17,8 @@ impl Display for Error {
             Error::NotPlaying => Cow::Borrowed("Failed to convert values"),
             Error::NoData => Cow::Borrowed("Failed to get current_track Data!"),
             Error::DeserializationFailed => Cow::Borrowed("Failed to deserialize current_track Data!"),
+            Error::AppCommandFailed => Cow::Borrowed("Failed to execute AppCommand"),
+
         };
 
         f.write_str(&msg)

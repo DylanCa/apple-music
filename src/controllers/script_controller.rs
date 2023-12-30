@@ -1,19 +1,23 @@
 use std::fmt::{Display, format};
 use std::process::Command;
 use log::debug;
+use serde::Deserialize;
+use crate::controllers::music::AppCommands;
 use crate::models::error::Error;
-use crate::models::track::Track;
 
-pub struct AppleMusic;
+pub struct ScriptController;
 
-impl AppleMusic {
-    pub fn get_current_track() -> Result<Track, Error> {
+impl ScriptController {
+    pub fn execute_script<T>(command: &str) -> Result<T, Error>
+    where T: for<'a> Deserialize<'a> {
         let mut output = Command::new("osascript")
             .arg("-l")
             .arg("JavaScript")
             .arg("-e")
-            .arg(include_str!("../scripts/current_track.js"))
+            .arg(command)
             .output();
+
+        debug!("{:?}", output);
 
         let data;
         match output {
@@ -26,12 +30,25 @@ impl AppleMusic {
 
         let output_str = String::from_utf8_lossy(&data.stdout);
 
-        return match serde_json::from_str::<Track>(&output_str) {
+        return match serde_json::from_str::<T>(&output_str) {
             Ok(data) => Ok(data),
             Err(err) => {
                 debug!("{:?}", err);
                 Err(Error::DeserializationFailed)
             }
         }
+    }
+
+    pub fn execute(command: AppCommands) {
+        let cmd = format!("Application('Music').{}();", command.to_string());
+
+        let output = Command::new("osascript")
+            .arg("-l")
+            .arg("JavaScript")
+            .arg("-e")
+            .arg(cmd)
+            .output();
+
+        debug!("{:?}", output);
     }
 }

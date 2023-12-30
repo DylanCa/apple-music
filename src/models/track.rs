@@ -35,19 +35,25 @@ pub enum MediaKind {
 
 #[derive(Deserialize, Debug)]
 pub struct Track {
+    pub class: String, // the class of the item
+    pub id: i32, // the id of the item
+    pub index: i32, // the index of the item in internal application order
+    pub name: String, // the name of the item
+    pub persistent_id: String, // the id of the item as a hexadecimal string. This id does not change over time.
+    pub raw_properties: String, // Every property of the item
+
     pub album: String, // The album name of the track
     pub album_artist: String, // The album artist of the track
     pub album_disliked: bool, // Is the album for this track disliked?
     pub album_loved: bool, // is the album for this track loved?
     pub album_rating: i16, // the rating of the album for this track (0 to 100)
     pub album_rating_kind: Kind, // the rating kind of the album rating for this track
-    pub artwork: Artwork, // the artist/source of the track
+    pub artworks: Vec<Artwork>, // the artist/source of the track
     pub bit_rate: i16, // the bit rate of the track (in kbps)
     pub bookmark: i8, // the bookmark time of the track in seconds
     pub bookmarkable: bool, // is the playback position for this track remembered?
     pub bpm: i16, // the tempo of this track in beats per minute
-    pub category: String, // the category of the track
-    pub class: String, // the class of the item
+    pub category: String, // the category of the trac
     pub cloud_status: Option<CloudStatus>, // the iCloud status of the track
     pub comment: String, // freeform notes about the track
     pub compilation: bool, // is this track from a compilation album?
@@ -69,8 +75,6 @@ pub struct Track {
     pub gapless: Option<bool>, // is this track from a gapless album?
     pub genre: String, // the music/audio genre (category) of the track
     pub grouping: String, // the grouping (piece) of the track. Generally used to denote movements within a classical work.
-    pub id: i32, // the id of the item
-    pub index: i32, // the index of the item in internal application order
     pub kind: Option<String>, // a text description of the track
     pub long_description: Option<String>, // the long description of the track
     pub loved: bool, // is this track loved?
@@ -80,11 +84,8 @@ pub struct Track {
     pub movement: Option<String>, // the movement name of the track
     pub movement_count: i16, // the total number of movements in the work
     pub movement_number: i16, // the index of the movement in the work
-    pub name: String, // the name of the item
-    pub persistent_id: String, // the id of the item as a hexadecimal string. This id does not change over time.
     pub played_count: i16, // number of times this track has been played
     pub played_date: Option<String>, // the date and time this track was last played
-    pub raw_properties: String, // Every property of the item
     pub purchaser_apple_id: Option<String>, // the Apple ID of the person who purchased this track
     pub purchaser_name: Option<String>, // the name of the person who purchased this track
     pub rating: i16, // the rating of this track (0 to 100)
