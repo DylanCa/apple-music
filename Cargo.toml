@@ -2,6 +2,9 @@
 name = "apple-music"
 version = "0.1.0"
 edition = "2021"
+description = "A Rust Library to control local Apple Music player"
+license = "MIT"
+keywords = ["apple", "music", "api", "interface"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
