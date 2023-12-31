@@ -1,7 +1,6 @@
 use std::process::Command;
 use log::debug;
 use serde::{Serialize, Deserialize};
-use serde_json::json;
 use strum_macros::Display;
 use crate::controllers::music::AppCommands;
 use crate::models::error::Error;
