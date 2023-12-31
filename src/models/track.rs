@@ -49,7 +49,7 @@ pub struct Track {
     pub album_rating: i16, // the rating of the album for this track (0 to 100)
     pub album_rating_kind: Kind, // the rating kind of the album rating for this track
     pub artworks: Vec<Artwork>, // the artist/source of the track
-    pub bit_rate: i16, // the bit rate of the track (in kbps)
+    pub bit_rate: Option<i16>, // the bit rate of the track (in kbps)
     pub bookmark: i8, // the bookmark time of the track in seconds
     pub bookmarkable: bool, // is the playback position for this track remembered?
     pub bpm: i16, // the tempo of this track in beats per minute
@@ -58,11 +58,9 @@ pub struct Track {
     pub comment: String, // freeform notes about the track
     pub compilation: bool, // is this track from a compilation album?
     pub composer: String, // the composer of the track
-    pub database_id: i16, // the common, unique ID for this track. If two tracks in different playlists have the same database ID, they are sharing the same data.
+    pub database_id: i32, // the common, unique ID for this track. If two tracks in different playlists have the same database ID, they are sharing the same data.
     pub date_added: String, // the date the track was added to the playlist
     pub description: String, // the description of the track
-    pub disc_count: i16, // the total number of discs in the source album
-    pub disc_number: i16, // the index of the disc containing this track on the source album
     pub disliked: bool, // is this track disliked?
     pub downloader_apple_id: Option<String>, // the Apple ID of the person who downloaded this track
     pub downloader_name: Option<String>, // the name of the person who downloaded this track
@@ -91,7 +89,7 @@ pub struct Track {
     pub rating: i16, // the rating of this track (0 to 100)
     pub rating_kind: Kind, // the rating kind of this track
     pub release_date: String, // the release date of this track
-    pub sample_rate: i32, // the sample rate of the track (in Hz)
+    pub sample_rate: Option<i32>, // the sample rate of the track (in Hz)
     pub season_number: Option<i16>, // the season number of the track
     pub shufflable: bool, // is this track included when shuffling?
     pub skipped_count: i16, // number of times this track has been skipped
@@ -103,7 +101,7 @@ pub struct Track {
     pub sort_name: Option<String>, // override string to use for the track when sorting by name
     pub sort_composer: Option<String>, // override string to use for the track when sorting by composer
     pub sort_show: Option<String>, // override string to use for the track when sorting by show name
-    pub size: i128, // the size of the track (in bytes)
+    pub size: Option<i64>, // the size of the track (in bytes)
     pub start: f64, // the start time of the track in seconds
     pub time: String, // the length of the track in MM:SS format
     pub track_count: i16, // the total number of tracks on the source album
