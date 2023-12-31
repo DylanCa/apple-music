@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use crate::models::playlist::Playlist;
 
 #[derive(Deserialize, Debug)]
 pub struct ApplicationData {
@@ -12,7 +13,7 @@ pub struct ApplicationData {
     // the currently selected encoder (MP3, AIFF, WAV, etc.)
     pub current_eq_presets: Vec<EqPreset>,
     // the currently selected equalizer preset
-    // pub current_playlist: Option<Playlist>, // the playlist containing the currently targeted track
+    pub current_playlist: Option<Playlist>, // the playlist containing the currently targeted track
     pub current_stream_title: Option<String>,
     // the name of the current track in the playing stream (provided by streaming server)
     pub current_stream_url: Option<String>,
@@ -35,6 +36,7 @@ pub struct ApplicationData {
     // : the player’s position within the currently playing track in seconds.
     pub player_state: Option<PlayerState>,
     // is the player stopped, paused, or playing?
+    pub playlists: Option<Vec<Playlist>>, // list of all user playlists
     pub selection: Option<String>,
     // TODO: Implement - the selection visible to the user
     pub shuffle_enabled: bool,

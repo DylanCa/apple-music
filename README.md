@@ -7,7 +7,12 @@ _A Rust Library to control local Apple Music player_
 Currently available:
 - ApplicationData
 - Track
+- Playlist + Playlist Tracks
 - AppCommands
+
+Available but buggy:
+- All Library Tracks (takes a long time & fails)
+
 
 ## HowTo 
 _(super lightweight, will update it real soon)_
@@ -16,5 +21,9 @@ let app_data = AppleMusic::get_application_data();
 let track = AppleMusic::get_current_track();
 
 AppleMusic::execute(AppCommands::PLAYPAUSE);
-
 ```
+
+## Next Steps
+- Finish to add remaining classes & methods
+- Add AppCommands w/ params
+- Try to parse data using Rust instead of JavaScript

@@ -1,17 +1,36 @@
+use serde_json::json;
 use strum_macros::Display;
-use crate::controllers::script_controller::ScriptController;
+use crate::controllers::script_controller::{ParamType, ScriptController};
 use crate::models::application_data::ApplicationData;
+use crate::models::error::Error;
 use crate::models::track::Track;
 
 pub struct AppleMusic;
 
 impl AppleMusic {
-    pub fn get_application_data() -> ApplicationData {
-        ScriptController::execute_script::<ApplicationData>(include_str!("./scripts/application.js")).unwrap()
+    pub fn get_application_data() -> Result<ApplicationData, Error> {
+        match ScriptController::execute_script::<ApplicationData>(include_str!("./scripts/application.js"), None) {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err)
+        }
     }
 
-    pub fn get_current_track() -> Track {
-        ScriptController::execute_script::<Track>(include_str!("./scripts/current_track.js")).unwrap()
+    pub fn get_current_track() -> Result<Track, Error> {
+        let params = json!({"param": ParamType::CurrentTrack.to_string()}).to_string();
+
+        match ScriptController::execute_script::<Track>(include_str!("./scripts/tracks.js"), Some(params)) {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err)
+        }
+    }
+
+    pub fn get_all_library_tracks() -> Result<Vec<Track>, Error> {
+        let params = json!({"param": ParamType::AllTracks.to_string()}).to_string();
+
+        match ScriptController::execute_script::<Vec<Track>>(include_str!("./scripts/tracks.js"), Some(params)) {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err)
+        }
     }
 
     pub fn execute(command: AppCommands) {
