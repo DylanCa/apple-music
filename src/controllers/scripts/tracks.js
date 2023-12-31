@@ -1,6 +1,26 @@
 function run(input) {
-    const Music = Application("Music");
-    const current_track = Music.currentTrack();
+    let param = JSON.parse(input)['param'];
+    if(param == "allTracks") {
+        const Music = Application("Music");
+        tracks = []
+        Music.tracks().forEach((track) => tracks.push(extract_track(track)))
+        return JSON.stringify(tracks);
+    } else if (param == "playlistTracks" ) {
+        let id = JSON.parse(input)['id'];
+        const Music = Application("Music");
+        const playlist = Music.sources.byId(64).playlists.byId(41554)
+
+        tracks = []
+        playlist.tracks().forEach((track) => tracks.push(extract_track(track)));
+        return JSON.stringify(tracks);
+    } else {
+        const Music = Application("Music");
+        let track = extract_track(Music.currentTrack());
+        return JSON.stringify(track);
+    }
+}
+
+function extract_track(current_track) {
     const track = {};
 
     artworks = [];
@@ -100,5 +120,5 @@ function run(input) {
     track.work = current_track.work();
     track.year = current_track.year();
 
-    return JSON.stringify(track);
+    return track;
 }

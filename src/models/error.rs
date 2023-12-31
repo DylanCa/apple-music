@@ -1,7 +1,6 @@
 use std::borrow::Cow;
 use std::fmt;
 use std::fmt::{Display, Formatter};
-use serde::Deserialize;
 
 #[derive(Debug)]
 pub enum Error {
