@@ -54,7 +54,9 @@ function run(input) {
         });
     });
     application.current_eq_presets = eq_presets;
-    application.current_playlist = Music.currentPlaylist();
+
+    try { application.current_playlist = extract_playlist(Music.currentPlaylist()); }
+    catch { application.current_playlist = null;}
 
     application.current_stream_title = Music.currentStreamTitle();
     application.current_stream_url = Music.currentStreamURL();
@@ -86,6 +88,11 @@ function run(input) {
     application.mute = Music.mute();
     application.player_position = Music.playerPosition();
     application.player_state = Music.playerState();
+
+    playlists = []
+    Music.playlists().forEach((playlist) => playlists.push(extract_playlist(playlist)))
+    application.playlists = playlists;
+
     application.selection = JSON.stringify(Music.selection());
     application.shuffle_enabled = Music.shuffleEnabled();
     application.shuffle_mode = Music.shuffleMode();
@@ -108,4 +115,31 @@ function run(input) {
     application.visuals_enabled = Music.visualsEnabled();
 
     return JSON.stringify(application);
+}
+
+function extract_playlist(playlist) {
+    parent = null;
+    if ("parent" in playlist.properties()) {
+        parent = extract_playlist(playlist.parent());
+    }
+
+    return {
+        class: playlist.class(),
+        id: playlist.id(),
+        index: playlist.index(),
+        name: playlist.name(),
+        persistent_id: playlist.persistentID(),
+        raw_properties: JSON.stringify(playlist.properties()),
+
+        description: playlist.description(),
+        disliked: playlist.disliked(),
+        duration: playlist.duration(),
+        loved: playlist.loved(),
+        parent: parent,
+        size: playlist.size(),
+        special_kind: playlist.specialKind(),
+        time: playlist.time(),
+        visible: playlist.visible(),
+    }
+
 }

@@ -1,23 +1,37 @@
-use std::fmt::{Display, format};
 use std::process::Command;
 use log::debug;
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
+use strum_macros::Display;
 use crate::controllers::music::AppCommands;
 use crate::models::error::Error;
+
+#[derive(Serialize, Display)]
+#[strum(serialize_all = "camelCase")]
+pub enum ParamType {
+    None,
+    AllTracks,
+    CurrentTrack,
+    PlaylistTracks
+}
 
 pub struct ScriptController;
 
 impl ScriptController {
-    pub fn execute_script<T>(command: &str) -> Result<T, Error>
+    pub fn execute_script<T>(command: &str, params: Option<String>) -> Result<T, Error>
     where T: for<'a> Deserialize<'a> {
-        let mut output = Command::new("osascript")
-            .arg("-l")
+        let mut binding = Command::new("osascript");
+        let output = binding.arg("-l")
             .arg("JavaScript")
             .arg("-e")
-            .arg(command)
-            .output();
+            .arg(command);
 
-        debug!("{:?}", output);
+            if let Some(params) = params {
+                output.arg(params);
+            }
+
+        let output = output.output();
+
+        // debug!("{:#?}", output_str);
 
         let data;
         match output {
