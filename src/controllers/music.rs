@@ -1,15 +1,18 @@
+use std::process::Output;
+use log::debug;
 use serde_json::json;
 use strum_macros::Display;
 use crate::controllers::script_controller::{ParamType, ScriptController};
 use crate::models::application_data::ApplicationData;
 use crate::models::error::Error;
+use crate::models::playlist::Playlist;
 use crate::models::track::Track;
 
 pub struct AppleMusic;
 
 impl AppleMusic {
     pub fn get_application_data() -> Result<ApplicationData, Error> {
-        match ScriptController::execute_script::<ApplicationData>(include_str!("./scripts/application.js"), None) {
+        match ScriptController.execute_script::<ApplicationData>(include_str!("./scripts/application.js"), None) {
             Ok(data) => Ok(data),
             Err(err) => Err(err)
         }
@@ -18,7 +21,7 @@ impl AppleMusic {
     pub fn get_current_track() -> Result<Track, Error> {
         let params = json!({"param": ParamType::CurrentTrack.to_string()}).to_string();
 
-        match ScriptController::execute_script::<Track>(include_str!("./scripts/tracks.js"), Some(params)) {
+        match ScriptController.execute_script::<Track>(include_str!("./scripts/tracks.js"), Some(params)) {
             Ok(data) => Ok(data),
             Err(err) => Err(err)
         }
@@ -27,14 +30,40 @@ impl AppleMusic {
     pub fn get_all_library_tracks() -> Result<Vec<Track>, Error> {
         let params = json!({"param": ParamType::AllTracks.to_string()}).to_string();
 
-        match ScriptController::execute_script::<Vec<Track>>(include_str!("./scripts/tracks.js"), Some(params)) {
+        match ScriptController.execute_script::<Vec<Track>>(include_str!("./scripts/tracks.js"), Some(params)) {
             Ok(data) => Ok(data),
             Err(err) => Err(err)
         }
     }
 
-    pub fn execute(command: AppCommands) {
-        ScriptController::execute(command);
+    pub fn play_track(track: &Track) -> Result<Output, Error> {
+        let cmd = format!("Application('Music').play(Application('Music').tracks.byId({}))", track.id);
+
+        ScriptController.execute(cmd.as_str(), None)
+    }
+
+    pub fn play_playlist(playlist: &Playlist) -> Result<Output, Error> {
+        let cmd = format!("Application('Music').play(Application('Music').playlists.byId({}))", playlist.id);
+
+        ScriptController.execute(cmd.as_str(), None)
+    }
+
+    pub fn set_mute(value: bool) -> Result<Output, Error> {
+        let cmd = format!("Application('Music').mute = {}", value);
+
+        ScriptController.execute(cmd.as_str(), None)
+    }
+
+    pub fn set_shuffle(value: bool) -> Result<Output, Error> {
+        let cmd = format!("Application('Music').shuffleEnabled = {}", value);
+
+        ScriptController.execute(cmd.as_str(), None)
+    }
+
+    pub fn set_song_repeat_mode(value: SongRepeatMode) -> Result<Output, Error> {
+        let cmd = format!("Application('Music').songRepeat = \"{}\"", value.to_string());
+
+        ScriptController.execute(cmd.as_str(), None)
     }
 }
 
@@ -64,15 +93,18 @@ pub enum AppCommands {
 
     /* TODO:
     STANDARD SUITE +
-    PLAY SPECIFIER
     ADD,
     CONVERT,
-    DOWNLOAD,
     EXPORT,
     REFRESH,
-    REVEAL,
-    SEARCH,
-    SELECT,
 
     */
+}
+
+#[derive(Display)]
+#[strum(serialize_all = "lowercase")]
+pub enum SongRepeatMode {
+    OFF,
+    ONE,
+    ALL
 }
