@@ -1,3 +1,4 @@
+use std::process::Output;
 use serde::Deserialize;
 use serde_json::json;
 use crate::controllers::script_controller::{ParamType, ScriptController};
@@ -51,9 +52,32 @@ impl Playlist {
         let params = json!({"param": ParamType::PlaylistTracks.to_string(),
         "id": self.id}).to_string();
 
-        match ScriptController::execute_script::<Vec<Track>>(include_str!("../controllers/scripts/tracks.js"), Some(params)) {
+        match ScriptController.execute_script::<Vec<Track>>(include_str!("../controllers/scripts/tracks.js"), Some(params)) {
             Ok(data) => { self.tracks = Some(data); Ok(()) },
             Err(err) => Err(err)
         }
+    }
+
+    pub fn search_for_tracks(&self, query: &str) -> Result<Option<Vec<Track>>, Error> {
+        let params = json!({"param": ParamType::SearchInPlaylist.to_string(),
+        "id": self.id,
+        "query": query}).to_string();
+
+        match ScriptController.execute_script::<Vec<Track>>(include_str!("../controllers/scripts/tracks.js"), Some(params)) {
+            Ok(data) => Ok(Option::from(data)),
+            Err(err) => Err(err)
+        }
+    }
+
+    pub fn reveal_in_player(&self) -> Result<Output, Error> {
+        let cmd = format!("Application('Music').reveal(Application('Music').playlists.byId({}))", self.id);
+
+        ScriptController.execute(cmd.as_str(), None)
+    }
+
+    pub fn download(&self) -> Result<Output, Error> {
+        let cmd = format!("Application('Music').download(Application('Music').playlists.byId({}))", self.id);
+
+        ScriptController.execute(cmd.as_str(), None)
     }
 }
