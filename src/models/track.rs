@@ -1,5 +1,8 @@
+use std::process::Output;
 use serde::Deserialize;
+use crate::controllers::script_controller::ScriptController;
 use crate::models::artwork::Artwork;
+use crate::models::error::Error;
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
@@ -110,4 +113,12 @@ pub struct Track {
     pub volume_adjustment: i16, // relative volume adjustment of the track (-100% to 100%)
     pub work: Option<String>, // the work name of the track
     pub year: i16, // the year the track was recorded/released
+}
+
+impl Track {
+    pub fn reveal_in_player(&self) -> Result<Output, Error> {
+        let cmd = format!("Application('Music').reveal(Application('Music').tracks.byId({}))", self.id);
+
+        ScriptController.execute(cmd.as_str(), None)
+    }
 }
