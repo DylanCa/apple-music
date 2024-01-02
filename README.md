@@ -23,7 +23,8 @@ let track = AppleMusic::get_current_track();
 AppleMusic::execute(AppCommands::PLAYPAUSE);
 ```
 
-## Next Steps
+## Next Steps before v1.0
 - Finish to add remaining classes & methods
-- Add AppCommands w/ params
 - Try to parse data using Rust instead of JavaScript
+- Refactor repeating logic
+- Fully document and test everything
