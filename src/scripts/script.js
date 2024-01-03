@@ -45,12 +45,19 @@ function application_data() {
         application.currentPlaylist = null;
     }
 
+    application.selection = []
+
+    Music.selection().forEach((track) => {
+        try {
+            application.selection.push(extract_track(track));
+        } catch { /* continue loop */
+        }
+    });
+
     application.currentEncoder = Music.currentEncoder().properties();
 
     application.playlists = []
     Music.playlists().forEach((playlist) => application.playlists.push(extract_playlist(playlist)));
-
-    application.selection = JSON.stringify(Music.selection());
 
     application.currentVisual = Music.currentVisual().properties();
 
