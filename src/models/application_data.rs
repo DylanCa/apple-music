@@ -1,5 +1,5 @@
-use serde::Deserialize;
 use crate::models::playlist::Playlist;
+use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -63,7 +63,6 @@ pub struct AirplayDevice {
     // the index of the item in internal application order
     pub name: String,
     // the name of the item
-
     #[serde(rename = "persistentID")]
     pub persistent_id: String,
     // the id of the item as a hexadecimal string. This id does not change over time.

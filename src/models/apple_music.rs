@@ -1,50 +1,60 @@
-use std::process::Output;
-use strum_macros::Display;
 use crate::controllers::script_controller::{ParamType, ScriptController};
 use crate::models::application_data::ApplicationData;
 use crate::models::error::Error;
 use crate::models::playlist::Playlist;
 use crate::models::track::Track;
+use std::process::Output;
+use strum_macros::Display;
 
 pub struct AppleMusic;
 
 impl AppleMusic {
     pub fn get_application_data() -> Result<ApplicationData, Error> {
-        match ScriptController.execute_script::<ApplicationData>(ParamType::ApplicationData, None, None) {
+        match ScriptController.execute_script::<ApplicationData>(
+            ParamType::ApplicationData,
+            None,
+            None,
+        ) {
             Ok(data) => Ok(data),
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
     }
 
     pub fn get_playlist_by_id(id: i32) -> Result<Playlist, Error> {
         match ScriptController.execute_script::<Playlist>(ParamType::PlaylistById, Some(id), None) {
             Ok(data) => Ok(data),
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
     }
 
     pub fn get_current_track() -> Result<Track, Error> {
         match ScriptController.execute_script::<Track>(ParamType::CurrentTrack, None, None) {
             Ok(data) => Ok(data),
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
     }
 
     pub fn get_all_library_tracks() -> Result<Vec<Track>, Error> {
         match ScriptController.execute_script::<Vec<Track>>(ParamType::AllTracks, None, None) {
             Ok(data) => Ok(data),
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
     }
 
     pub fn play_track(track: &Track) -> Result<Output, Error> {
-        let cmd = format!("Application('Music').play(Application('Music').tracks.byId({}))", track.id);
+        let cmd = format!(
+            "Application('Music').play(Application('Music').tracks.byId({}))",
+            track.id
+        );
 
         ScriptController.execute(cmd.as_str(), None)
     }
 
     pub fn play_playlist(playlist: &Playlist) -> Result<Output, Error> {
-        let cmd = format!("Application('Music').play(Application('Music').playlists.byId({}))", playlist.id);
+        let cmd = format!(
+            "Application('Music').play(Application('Music').playlists.byId({}))",
+            playlist.id
+        );
 
         ScriptController.execute(cmd.as_str(), None)
     }
@@ -62,13 +72,19 @@ impl AppleMusic {
     }
 
     pub fn set_song_repeat_mode(value: SongRepeatMode) -> Result<Output, Error> {
-        let cmd = format!("Application('Music').songRepeat = \"{}\"", value.to_string());
+        let cmd = format!(
+            "Application('Music').songRepeat = \"{}\"",
+            value.to_string()
+        );
 
         ScriptController.execute(cmd.as_str(), None)
     }
 
     pub fn convert_track(track: &Track) -> Result<Output, Error> {
-        let cmd = format!("Application('Music').convert(Application('Music').tracks.byId({}))", track.id);
+        let cmd = format!(
+            "Application('Music').convert(Application('Music').tracks.byId({}))",
+            track.id
+        );
 
         ScriptController.execute(cmd.as_str(), None)
     }
