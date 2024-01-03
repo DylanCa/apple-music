@@ -3,7 +3,6 @@ use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 pub struct Artwork {
     pub class: String, // the class of the item
-    pub raw_properties: String, // Every property of the item
 
     pub data: Option<String>,
     pub description: Option<String>,
