@@ -11,7 +11,8 @@ Currently available:
 - AppCommands
 
 Available but buggy:
-- All Library Tracks (takes a long time & fails)
+- Library & Playist tracks if they exceed ~900 tracks:
+  - This seems to be a JavaScript limit, I need to look into it.
 
 
 ## HowTo 
@@ -24,7 +25,8 @@ AppleMusic::execute(AppCommands::PLAYPAUSE);
 ```
 
 ## Next Steps before v1.0
-- Finish to add remaining classes & methods
-- Try to parse data using Rust instead of JavaScript
-- Refactor repeating logic
+- Finish to add remaining classes & methods:
+  - `ADD()`
+  - `EXPORT()`
+  - `REFRESH()`
 - Fully document and test everything
