@@ -1,7 +1,8 @@
-use serde::Deserialize;
 use crate::models::playlist::Playlist;
+use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct ApplicationData {
     pub airplay_enabled: Option<bool>,
     // is AirPlay currently enabled?
@@ -11,8 +12,6 @@ pub struct ApplicationData {
     // the currently selected AirPlay device(s)
     pub current_encoder: Encoder,
     // the currently selected encoder (MP3, AIFF, WAV, etc.)
-    pub current_eq_presets: Vec<EqPreset>,
-    // the currently selected equalizer preset
     pub current_playlist: Option<Playlist>, // the playlist containing the currently targeted track
     pub current_stream_title: Option<String>,
     // the name of the current track in the playing stream (provided by streaming server)
@@ -54,6 +53,7 @@ pub struct ApplicationData {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct AirplayDevice {
     pub class: String,
     // the class of the item
@@ -63,10 +63,9 @@ pub struct AirplayDevice {
     // the index of the item in internal application order
     pub name: String,
     // the name of the item
+    #[serde(rename = "persistentID")]
     pub persistent_id: String,
     // the id of the item as a hexadecimal string. This id does not change over time.
-    pub raw_properties: String, // Every property of the item
-
     pub active: Option<bool>,
     // is the device currently being played to?
     pub available: Option<bool>,
@@ -95,9 +94,7 @@ pub struct Encoder {
     // the index of the item in internal application order
     pub name: String,
     // the name of the item
-    pub raw_properties: String, // Every property of the item
-
-    pub format: String, // the data format created by the encoder
+    pub format: Option<String>, // the data format created by the encoder
 }
 
 #[derive(Deserialize, Debug)]
@@ -110,8 +107,6 @@ pub struct EqPreset {
     // the index of the item in internal application order
     pub name: String,
     // the name of the item
-    pub raw_properties: String, // Every property of the item
-
     pub band1: f32,
     // the equalizer 32 Hz band level (-12.0 dB to +12.0 dB)
     pub band2: f32,
@@ -149,7 +144,6 @@ pub struct Visual {
     // the index of the item in internal application order
     pub name: String,
     // the name of the item
-    pub raw_properties: String, // Every property of the item
 }
 
 #[derive(Deserialize, Debug)]
