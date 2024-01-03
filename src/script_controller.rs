@@ -1,5 +1,5 @@
-use crate::models::error::Error;
-use log::debug;
+use crate::error::Error;
+use log::error;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::collections::HashMap;
@@ -17,6 +17,7 @@ pub enum ParamType {
     SearchInPlaylist,
 }
 
+/// TEST
 pub struct ScriptController;
 
 impl ScriptController {
@@ -30,7 +31,7 @@ impl ScriptController {
         T: for<'a> Deserialize<'a>,
     {
         let params = self.generate_json(param_type, id, query);
-        let script_path = include_str!("./scripts/script.js");
+        let script_path = include_str!("scripts/script.js");
 
         let output = self.execute(script_path, Some(params));
 
@@ -38,6 +39,7 @@ impl ScriptController {
         match output {
             Ok(d) => data = d,
             Err(err) => {
+                error!("{:#?}", err);
                 return Err(err);
             }
         }
@@ -46,7 +48,10 @@ impl ScriptController {
 
         return match serde_json::from_str::<T>(&output_str) {
             Ok(data) => Ok(data),
-            Err(err) => Err(Error::DeserializationFailed),
+            Err(err) => {
+                error!("{:#?}", err);
+                Err(Error::DeserializationFailed)
+            }
         };
     }
 
@@ -61,7 +66,7 @@ impl ScriptController {
         match output.output() {
             Ok(d) => data = d,
             Err(err) => {
-                debug!("{:?}", err);
+                error!("{:#?}", err);
                 return Err(Error::NoData);
             }
         }
