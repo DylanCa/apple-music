@@ -1,10 +1,14 @@
 [package]
 name = "apple-music"
-version = "0.6.0"
+authors = ["Dylan Cattelan <dylan.cattelan@gmail.com"]
+version = "0.7.0"
 edition = "2021"
 description = "A Rust Library to fully control local MacOS Apple Music player."
+documentation = "https://docs.rs/apple-music/latest"
+repository = "https://github.com/DylanCa/apple-music"
 license = "MIT"
-keywords = ["apple", "music", "api", "interface"]
+keywords = ["apple", "music", "player", "osascript"]
+categories = ["api-bindings", "gui", "multimedia"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
