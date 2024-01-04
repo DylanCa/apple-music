@@ -1,7 +1,6 @@
 use crate::error::Error;
 use crate::script_controller::{ParamType, ScriptController};
 use crate::track::Track;
-use log::warn;
 use serde::Deserialize;
 
 /// Provides data related to a specific playlist as well as a list of Tracks (if fetched).
@@ -59,7 +58,6 @@ impl Playlist {
     /// Fetches Tracks in Playlist and populates `self.tracks`.
     /// WARNING: This fails when more than 900 tracks are fetched due to a JavaScript limit.
     pub fn fetch_playlist_tracks(&mut self) -> Result<(), Error> {
-        warn!("fetch_playlist_tracks() Might fail if more than 900 Tracks are to be returned, due to a JavaScript limit.");
         match ScriptController.execute_script::<Vec<Track>>(
             ParamType::PlaylistTracks,
             Some(self.id),
