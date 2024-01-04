@@ -3,7 +3,6 @@ use crate::error::Error;
 use crate::playlist::Playlist;
 use crate::script_controller::{ParamType, ScriptController};
 use crate::track::Track;
-use log::warn;
 use strum_macros::Display;
 
 /// Strict entry point of the module containing the whole logic.
@@ -41,7 +40,6 @@ impl AppleMusic {
     /// Fetches and returns a list of all Library Tracks.
     /// WARNING: Might fail if more than 900 Tracks are to be returned, due to a JavaScript limit.
     pub fn get_all_library_tracks() -> Result<Vec<Track>, Error> {
-        warn!("get_all_library_tracks() Might fail if more than 900 Tracks are to be returned, due to a JavaScript limit.");
         match ScriptController.execute_script::<Vec<Track>>(ParamType::AllTracks, None, None) {
             Ok(data) => Ok(data),
             Err(err) => Err(err),

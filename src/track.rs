@@ -1,5 +1,5 @@
 use crate::error::Error;
-use crate::script_controller::ScriptController;
+use crate::script_controller::{ParamType, ScriptController};
 use serde::Deserialize;
 
 /// Provides data related to a specific Track as well as its artworks.
@@ -165,7 +165,7 @@ pub struct Track {
     pub rating_kind: Option<Kind>,
 
     /// The release date of this track
-    pub release_date: String,
+    pub release_date: Option<String>,
 
     /// The sample rate of the track (in Hz)
     pub sample_rate: Option<i32>,
@@ -232,6 +232,20 @@ pub struct Track {
 }
 
 impl Track {
+    pub fn fetch_artworks(&mut self) -> Result<(), Error> {
+        match ScriptController.execute_script::<Vec<Artwork>>(
+            ParamType::Artworks,
+            Some(self.id),
+            None,
+        ) {
+            Ok(data) => {
+                self.artworks = Some(data);
+                Ok(())
+            }
+            Err(err) => Err(err),
+        }
+    }
+
     /// Reveals and selects Track in Apple Music.
     pub fn reveal_in_player(&self) -> Result<(), Error> {
         let cmd = format!(

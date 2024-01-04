@@ -9,6 +9,7 @@ use strum_macros::Display;
 #[derive(Serialize, Display)]
 #[strum(serialize_all = "camelCase")]
 pub enum ParamType {
+    Artworks,
     AllTracks,
     CurrentTrack,
     PlaylistById,
