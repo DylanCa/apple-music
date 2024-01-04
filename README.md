@@ -10,7 +10,6 @@ The logic behind this crate relies on Apple's scripting APIs through [`osascript
 
 
 ## Example
-No need to create an instance to use the crate:
 ```rust
 let playlist = &AppleMusic::get_playlist_by_id(1234).unwrap();
 AppleMusic::play_playlist(playlist); // Apple Music player starts playing provided Playlist.
@@ -39,19 +38,16 @@ playlist.download(); // Playlist is being downloaded on Apple Music player.
 AppleMusic::quit(); // Quit Apple Music application on Mac.
 ```
 
-## Limitations
-### Code-related
-Currently, `playlist.fetch_playlist_tracks()` and `AppleMusic::get_all_library_tracks()` are failing when fetching more than 900 tracks due to a JavaScript limitation when stringifying an object.
-
-### Platforms
-This crate only works on MacOs, and has only been tested with macOS 13.4.1 and Apple Music 1.3.5.
-
-I would be more than happy provide support for other version of MacOs / Apple Music, do not hesitate to open an issue if you are facing failures!
-
 ## Going further
 That is just a part of the available API.
 
 For more info and an exhaustive list of what's available, please check out the [documentation](https://docs.rs/apple-music/latest)!
+
+## Limitations
+### Platforms
+This crate only works on MacOs, and has only been tested with macOS 13.4.1 and Apple Music 1.3.5.
+
+I would be more than happy provide support for other version of MacOs / Apple Music, do not hesitate to open an issue if you are facing failures!
 
 ## Next Steps 
 _Before v1.0:_

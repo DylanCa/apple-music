@@ -2,17 +2,22 @@ function run(input) {
     let params = JSON.parse(input);
 
     switch (params['param_type']) {
+        case "artworks":
+            let track = Application('Music').tracks.byId(params["id"]);
+            let extracted_artworks = extract_artworks(track);
+            return JSON.stringify(extracted_artworks);
+
         case "allTracks":
             return all_tracks();
 
         case "currentTrack":
-            let track = extract_track(Application("Music").currentTrack());
-            return JSON.stringify(track);
+            let current_track = Application("Music").currentTrack().properties();
+            return JSON.stringify(current_track);
 
         case "playlistById":
             let playlist = Application("Music").playlists.byId(params["id"]);
-            let data = extract_playlist(playlist);
-            return JSON.stringify(data);
+            let extracted_playlist = extract_playlist(playlist);
+            return JSON.stringify(extracted_playlist);
 
         case "playlistTracks":
             return playlist_tracks(params["id"]);
@@ -49,7 +54,7 @@ function application_data() {
 
     Music.selection().forEach((track) => {
         try {
-            application.selection.push(extract_track(track));
+            application.selection.push(track.properties());
         } catch { /* continue loop */
         }
     });
@@ -86,6 +91,21 @@ function extract_track(current_track) {
     return track;
 }
 
+function extract_artworks(current_track) {
+    let artworks = [];
+
+    current_track.artworks().forEach((artwork) => {
+        try {
+            let json = artwork.properties();
+            json.raw_data = artwork.rawData();
+            artworks.push(json);
+        } catch { /* do nothing */
+        }
+    });
+
+    return artworks;
+}
+
 function extract_playlist(playlist) {
     let data = playlist.properties();
 
@@ -101,7 +121,7 @@ function all_tracks() {
     let tracks = []
     Application("Music").tracks().forEach((track) => {
         try {
-            tracks.push(extract_track(track));
+            tracks.push(track.properties());
         } catch { /* continue loop */
         }
     });
@@ -113,7 +133,7 @@ function search_in_playlist(id, query) {
     let results = Application("Music").playlists.byId(id).search({for: query});
 
     let tracks = []
-    results.forEach((track) => tracks.push(extract_track(track)));
+    results.forEach((track) => tracks.push(track.properties()));
     return JSON.stringify(tracks)
 }
 
@@ -121,6 +141,6 @@ function playlist_tracks(id) {
     const playlist = Application("Music").playlists.byId(id)
 
     let tracks = []
-    playlist.tracks().forEach((track) => tracks.push(extract_track(track)));
+    playlist.tracks().forEach((track) => tracks.push(track.properties()));
     return JSON.stringify(tracks);
 }
