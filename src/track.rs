@@ -1,6 +1,7 @@
 use crate::error::Error;
 use crate::script_controller::{ParamType, ScriptController};
 use serde::Deserialize;
+use std::io::Read;
 
 /// Provides data related to a specific Track as well as its artworks.
 #[derive(Deserialize, Debug)]
@@ -23,7 +24,7 @@ pub struct Track {
     pub persistent_id: String,
 
     /// The album name of the track
-    pub album: String,
+    pub album: Option<String>,
 
     /// The album artist of the track
     pub album_artist: String,
@@ -40,8 +41,11 @@ pub struct Track {
     /// The rating kind of the album rating for this track
     pub album_rating_kind: Option<Kind>,
 
-    /// The artist/source of the track
-    pub artworks: Option<Vec<Artwork>>,
+    /// The raw data of the artworks attached to this track.
+    pub artworks_raw_data: Option<Vec<Artwork>>,
+
+    /// The URL of the main artwork for this track.
+    artwork_url: Option<String>,
 
     /// The artist of the track
     pub artist: String,
@@ -218,6 +222,9 @@ pub struct Track {
     /// The total number of tracks on the source album
     pub track_count: i16,
 
+    /// The Apple Music URL for this Track.
+    track_url: Option<String>,
+
     /// The index of the track on the source album
     pub track_number: i16,
 
@@ -235,14 +242,34 @@ pub struct Track {
 }
 
 impl Track {
-    pub fn fetch_artworks(&mut self) -> Result<(), Error> {
+    /// Method that either returns an already fetched artwork_url, or fetches it and then returns it.
+    pub fn artwork_url(&mut self) -> &Option<String> {
+        if self.artwork_url == None {
+            self.fetch_itunes_store_data()
+        }
+
+        return &self.artwork_url;
+    }
+
+    /// Method that either returns an already fetched track_url, or fetches it and then returns it.
+    pub fn track_url(&mut self) -> &Option<String> {
+        if self.track_url == None {
+            self.fetch_itunes_store_data()
+        }
+
+        return &self.track_url;
+    }
+
+    /// Returns a list of all artworks with their raw_data.
+    /// Recommended to use Track.get_artwork_url() instead.
+    pub fn fetch_artworks_raw_data(&mut self) -> Result<(), Error> {
         match ScriptController.execute_script::<Vec<Artwork>>(
             ParamType::Artworks,
             Some(self.id),
             None,
         ) {
             Ok(data) => {
-                self.artworks = Some(data);
+                self.artworks_raw_data = Some(data);
                 Ok(())
             }
             Err(err) => Err(err),
@@ -296,6 +323,32 @@ impl Track {
 
         Ok(())
     }
+
+    /// Search for a song in the Itunes Store and extract its artwork_url & track_url.
+    fn fetch_itunes_store_data(&mut self) {
+        let request = format!(
+            "https://itunes.apple.com/search?term={}&entity=song",
+            self.name
+        );
+        let mut res = reqwest::blocking::get(request).unwrap();
+        let mut body = String::new();
+        res.read_to_string(&mut body).unwrap();
+
+        if let Ok(search) = serde_json::from_str::<ITunesStoreSearch>(body.as_str()) {
+            if search.result_count == 1 {
+                self.artwork_url = search.results[0].clone().artwork_url_100;
+                self.track_url = search.results[0].clone().track_view_url;
+            } else {
+                let result = search
+                    .results
+                    .iter()
+                    .find(|result| &result.collection_name == &self.album)
+                    .unwrap();
+                self.artwork_url = result.clone().artwork_url_100;
+                self.track_url = result.clone().track_view_url;
+            }
+        }
+    }
 }
 
 /// Data for a given Artwork.
@@ -321,6 +374,28 @@ pub struct Artwork {
 
     /// Data for this artwork, in original format.
     pub raw_data: String,
+}
+
+/// Struct representing a search through the Itunes Store.
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ITunesStoreSearch {
+    pub result_count: i32,
+    pub results: Vec<ITunesStoreData>,
+}
+
+/// Struct representing an object from the Itunes Store.
+#[derive(Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct ITunesStoreData {
+    /// The URL of the main artwork for this track.
+    pub artwork_url_100: Option<String>,
+
+    /// The Apple Music URL this track.
+    pub track_view_url: Option<String>,
+
+    /// The Album name.
+    pub collection_name: Option<String>,
 }
 
 /// Type of Rating: User-made or Computed.
