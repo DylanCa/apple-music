@@ -23,6 +23,8 @@
 //! let current_track = AppleMusic::get_current_track().unwrap();
 //! println!("{}", current_track.name()); // "An awesome song!"
 //!
+//! println!("{}", current_track.artwork_url()); // Prints the direct url for the Artwork of the Track.
+//!
 //! current_track.set_loved(true); // Track is now loved!
 //!
 //! AppleMusic::next_track(); // Goes to next track.

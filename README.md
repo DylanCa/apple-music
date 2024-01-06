@@ -22,6 +22,8 @@ AppleMusic::play_track(track); // Apple Music player starts playing provided Tra
 let current_track = AppleMusic::get_current_track().unwrap();
 println!("{}", current_track.name()); // "An awesome song!"
 
+println!("{}", current_track.artwork_url()); // Prints the direct url for the Artwork of the Track.
+
 current_track.set_loved(true); // Track is now loved!
 
 AppleMusic::next_track(); // Goes to next track.
@@ -56,4 +58,3 @@ _Before v1.0:_
   - `EXPORT()`
   - `REFRESH()`
   - Ensure the whole API is covered by this crate
-- Add thorough tests
