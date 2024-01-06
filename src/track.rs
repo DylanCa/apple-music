@@ -43,6 +43,9 @@ pub struct Track {
     /// The artist/source of the track
     pub artworks: Option<Vec<Artwork>>,
 
+    /// The artist of the track
+    pub artist: String,
+
     /// The bit rate of the track (in kbps)
     pub bit_rate: Option<i16>,
 
