@@ -327,9 +327,22 @@ impl Track {
     /// Search for a song in the Itunes Store and extract its artwork_url & track_url.
     fn fetch_itunes_store_data(&mut self) {
         let request = format!(
-            "https://itunes.apple.com/search?term={}&entity=song&attribute=albumTerm",
+            "https://itunes.apple.com/search?term={}&entity=song&attribute=albumTerm&limit=200",
             self.album
         );
+        self.fetch_itunes_store_by_request(request);
+
+        if self.artwork_url == None {
+            let request = format!(
+                "https://itunes.apple.com/search?term={}&entity=song&limit=200",
+                self.name
+            );
+            self.fetch_itunes_store_by_request(request);
+        }
+    }
+
+
+    fn fetch_itunes_store_by_request(&mut self, request: String) {
         let mut res = reqwest::blocking::get(request).unwrap();
         let mut body = String::new();
         res.read_to_string(&mut body).unwrap();
@@ -342,10 +355,18 @@ impl Track {
                 let result = search
                     .results
                     .iter()
-                    .find(|result| &result.track_name == &self.name)
-                    .unwrap();
-                self.artwork_url = Some(result.clone().artwork_url_100);
-                self.track_url = Some(result.clone().track_view_url);
+                    .find(|result|
+                        &result.track_name.to_lowercase() == &self.name.to_lowercase()
+                        && &result.collection_name.to_lowercase() == &self.album.to_lowercase()
+                    );
+
+                match result {
+                    Some(data) => {
+                        self.artwork_url = Some(data.clone().artwork_url_100);
+                        self.track_url = Some(data.clone().track_view_url);
+                    }
+                    None => { () }
+                }
             }
         }
     }
@@ -396,6 +417,9 @@ struct ITunesStoreData {
 
     /// The Apple Music URL this track.
     pub track_view_url: String,
+
+    /// The Album name of this Track.
+    pub collection_name: String,
 }
 
 /// Type of Rating: User-made or Computed.
