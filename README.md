@@ -8,6 +8,45 @@ _A Rust Library to fully control local MacOS Apple Music player._
 This crate provides a convenient way of controlling a MacOS Apple Music player, fully through Rust code.
 The logic behind this crate relies on Apple's scripting APIs through [`osascript` CLI](https://ss64.com/mac/osascript.html) and `JavaScript` scripts.
 
+## Installation
+`apple-music` is available directly on crates.io:
+```shell
+cargo add apple-music
+```
+
+## How-to
+Import the library in your project:
+```rust
+use apple-music::AppleMusic;
+```
+
+The library entry point is `AppleMusic`. From there, you can:
+- Get the application's data - `AppleMusic::get_application_data();` -> `ApplicationData`
+- Get the current track - `AppleMusic::get_current_track();` -> `Track`
+  - Track can then be used directly:
+    - Love / dislike Track - `track.set_loved(true);` or `track.set_disliked(true);`
+    - Download Track - `track.download()`
+    - Reveal Track in Player - `track.reveal_in_player()`
+
+
+- Get the current playlist - `AppleMusic::get_current_playlist();` -> `Playlist`
+  - Playlist can then be used directly:
+    - Search for a track in a playlist - `playlist.search_for_tracks(track_name)` -> `Vec<Track>`
+    - Reveal Playlist in player - `playlist.reveal_in_player()`
+    - Download Playlist - `playlist.download()`
+
+To control the player, you can do it directly using `AppleMusic`:
+- Set the volume - `AppleMusic::set_sound_volume(50);`
+- Change track - `AppleMusic::next_track();`
+- Play specific Track - `AppleMusic::play_track(Track);`
+- Pause - `AppleMusic::pause();`
+- Quit the application - `AppleMusic::quit();`
+
+
+That is just a part of the available API, without even mentioning the data you have access to.
+
+For more info and an exhaustive list of what's available, please check out the [documentation](https://docs.rs/apple-music/latest)!
+
 
 ## Example
 ```rust
@@ -39,11 +78,6 @@ playlist.download(); // Playlist is being downloaded on Apple Music player.
 
 AppleMusic::quit(); // Quit Apple Music application on Mac.
 ```
-
-## Going further
-That is just a part of the available API.
-
-For more info and an exhaustive list of what's available, please check out the [documentation](https://docs.rs/apple-music/latest)!
 
 ## Limitations
 ### Platforms
