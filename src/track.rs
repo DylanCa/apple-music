@@ -2,6 +2,7 @@ use crate::error::Error;
 use crate::script_controller::{ParamType, ScriptController};
 use serde::Deserialize;
 use std::io::Read;
+use urlencoding::encode;
 
 /// Provides data related to a specific Track as well as its artworks.
 #[derive(Deserialize, Debug)]
@@ -328,14 +329,14 @@ impl Track {
     fn fetch_itunes_store_data(&mut self) {
         let request = format!(
             "https://itunes.apple.com/search?term={}&entity=song&attribute=albumTerm&limit=200",
-            self.album
+            encode(self.album.as_str())
         );
         self.fetch_itunes_store_by_request(request);
 
         if self.artwork_url == None {
             let request = format!(
                 "https://itunes.apple.com/search?term={}&entity=song&limit=200",
-                self.name
+                encode(self.album.as_str())
             );
             self.fetch_itunes_store_by_request(request);
         }
