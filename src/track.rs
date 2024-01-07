@@ -24,7 +24,7 @@ pub struct Track {
     pub persistent_id: String,
 
     /// The album name of the track
-    pub album: Option<String>,
+    pub album: String,
 
     /// The album artist of the track
     pub album_artist: String,
@@ -327,8 +327,8 @@ impl Track {
     /// Search for a song in the Itunes Store and extract its artwork_url & track_url.
     fn fetch_itunes_store_data(&mut self) {
         let request = format!(
-            "https://itunes.apple.com/search?term={}&entity=song",
-            self.name
+            "https://itunes.apple.com/search?term={}&entity=song&attribute=albumTerm",
+            self.album
         );
         let mut res = reqwest::blocking::get(request).unwrap();
         let mut body = String::new();
@@ -336,16 +336,16 @@ impl Track {
 
         if let Ok(search) = serde_json::from_str::<ITunesStoreSearch>(body.as_str()) {
             if search.result_count == 1 {
-                self.artwork_url = search.results[0].clone().artwork_url_100;
-                self.track_url = search.results[0].clone().track_view_url;
+                self.artwork_url = Some(search.results[0].clone().artwork_url_100);
+                self.track_url = Some(search.results[0].clone().track_view_url);
             } else {
                 let result = search
                     .results
                     .iter()
-                    .find(|result| &result.collection_name == &self.album)
+                    .find(|result| &result.track_name == &self.name)
                     .unwrap();
-                self.artwork_url = result.clone().artwork_url_100;
-                self.track_url = result.clone().track_view_url;
+                self.artwork_url = Some(result.clone().artwork_url_100);
+                self.track_url = Some(result.clone().track_view_url);
             }
         }
     }
@@ -388,14 +388,14 @@ struct ITunesStoreSearch {
 #[derive(Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 struct ITunesStoreData {
+    /// The name of the Track
+    pub track_name: String,
+
     /// The URL of the main artwork for this track.
-    pub artwork_url_100: Option<String>,
+    pub artwork_url_100: String,
 
     /// The Apple Music URL this track.
-    pub track_view_url: Option<String>,
-
-    /// The Album name.
-    pub collection_name: Option<String>,
+    pub track_view_url: String,
 }
 
 /// Type of Rating: User-made or Computed.
