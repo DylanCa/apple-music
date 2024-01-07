@@ -328,15 +328,23 @@ impl Track {
     /// Search for a song in the Itunes Store and extract its artwork_url & track_url.
     fn fetch_itunes_store_data(&mut self) {
         let request = format!(
-            "https://itunes.apple.com/search?term={}&entity=song&attribute=albumTerm&limit=200",
-            encode(self.album.as_str())
+            "https://itunes.apple.com/search?term={}&entity=song&limit=200",
+            encode(self.name.as_str())
         );
         self.fetch_itunes_store_by_request(request);
 
         if self.artwork_url == None {
             let request = format!(
-                "https://itunes.apple.com/search?term={}&entity=song&limit=200",
+                "https://itunes.apple.com/search?term={}&entity=song&attribute=albumTerm&limit=200",
                 encode(self.album.as_str())
+            );
+            self.fetch_itunes_store_by_request(request);
+        }
+
+        if self.artwork_url == None {
+            let request = format!(
+                "https://itunes.apple.com/search?term={}&entity=song&limit=200",
+                encode(self.artist.as_str())
             );
             self.fetch_itunes_store_by_request(request);
         }
@@ -357,8 +365,10 @@ impl Track {
                     .results
                     .iter()
                     .find(|result|
-                        &result.track_name.to_lowercase() == &self.name.to_lowercase()
-                        && &result.collection_name.to_lowercase() == &self.album.to_lowercase()
+                              ( &result.track_name.to_lowercase() == &self.name.to_lowercase()
+                                  || &result.track_censored_name.to_lowercase() == &self.name.to_lowercase() )
+                        && ( &result.artist_name.to_lowercase() == &self.artist.to_lowercase()
+                                  || &result.collection_name.to_lowercase() == &self.album.to_lowercase() )
                     );
 
                 match result {
@@ -410,7 +420,13 @@ struct ITunesStoreSearch {
 #[derive(Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 struct ITunesStoreData {
-    /// The name of the Track
+    /// The Artist of the Track
+    pub artist_name: String,
+
+    /// The censored name of the Track.
+    pub track_censored_name: String,
+
+    /// The name of the Track.
     pub track_name: String,
 
     /// The URL of the main artwork for this track.
