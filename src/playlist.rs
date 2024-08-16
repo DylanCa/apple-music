@@ -32,8 +32,8 @@ pub struct Playlist {
     /// The total length of all tracks (in seconds)
     pub duration: Option<f32>,
 
-    /// Is this playlist loved?
-    pub loved: bool,
+    /// Is this playlist favorited?
+    pub favorited: bool,
 
     /// Folder which contains this playlist (if any)
     pub parent: Option<Box<Playlist>>,
