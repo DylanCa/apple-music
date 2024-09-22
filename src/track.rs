@@ -472,6 +472,7 @@ pub enum CloudStatus {
 #[serde(rename_all = "camelCase")]
 pub enum MediaKind {
     Song,
+    #[serde(rename = "music video")]
     MusicVideo,
     Unknown,
 }
