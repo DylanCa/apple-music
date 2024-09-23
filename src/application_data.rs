@@ -240,12 +240,12 @@ pub enum ShuffleMode {
     Groupings,
 }
 
-/// Type of Song Repeat (Off, On, All).
+/// Type of Song Repeat (Off, One, All).
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum SongRepeat {
     Off,
-    On,
+    One,
     All,
 }
 
