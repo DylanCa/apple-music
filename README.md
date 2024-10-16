@@ -24,7 +24,7 @@ The library entry point is `AppleMusic`. From there, you can:
 - Get the application's data - `AppleMusic::get_application_data();` -> `ApplicationData`
 - Get the current track - `AppleMusic::get_current_track();` -> `Track`
   - Track can then be used directly:
-    - Love / dislike Track - `track.set_loved(true);` or `track.set_disliked(true);`
+    - Favorite / dislike Track - `track.set_favorited(true);` or `track.set_disliked(true);`
     - Download Track - `track.download()`
     - Reveal Track in Player - `track.reveal_in_player()`
 
@@ -63,7 +63,7 @@ println!("{}", current_track.name()); // "An awesome song!"
 
 println!("{}", current_track.artwork_url()); // Prints the direct url for the Artwork of the Track.
 
-current_track.set_loved(true); // Track is now loved!
+current_track.set_favorited(true); // Track is now favorited!
 
 AppleMusic::next_track(); // Goes to next track.
 
@@ -85,7 +85,7 @@ This crate only works on MacOs, and has only been tested with macOS 13.4.1 and A
 
 I would be more than happy provide support for other version of MacOs / Apple Music, do not hesitate to open an issue if you are facing failures!
 
-## Next Steps 
+## Next Steps
 _Before v1.0:_
 - Finish to add remaining classes & methods:
   - `ADD()`

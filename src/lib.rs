@@ -24,7 +24,7 @@
 //! - Get the application's data - `AppleMusic::get_application_data();` -> `ApplicationData`
 //! - Get the current track - `AppleMusic::get_current_track();` -> `Track`
 //!   - Track can then be used directly:
-//!     - Love / dislike Track - `track.set_loved(true);` or `track.set_disliked(true);`
+//!     - Favorite / dislike Track - `track.set_favorited(true);` or `track.set_disliked(true);`
 //!     - Download Track - `track.download()`
 //!     - Reveal Track in Player - `track.reveal_in_player()`
 //
@@ -63,7 +63,7 @@
 //
 //! println!("{}", current_track.artwork_url()); //! Prints the direct url for the Artwork of the Track.
 //
-//! current_track.set_loved(true); //! Track is now loved!
+//! current_track.set_favorited(true); //! Track is now favorited!
 //
 //! AppleMusic::next_track(); //! Goes to next track.
 //
