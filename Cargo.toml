@@ -1,7 +1,7 @@
 [package]
 name = "apple-music"
 authors = ["Dylan Cattelan <dylan.cattelan@gmail.com"]
-version = "0.11.3"
+version = "0.11.4"
 edition = "2021"
 description = "A Rust Library to fully control local MacOS Apple Music player."
 documentation = "https://docs.rs/apple-music/latest"
