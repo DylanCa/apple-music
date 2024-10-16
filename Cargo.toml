@@ -13,11 +13,11 @@ categories = ["api-bindings", "gui", "multimedia"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde_json = "1.0.108"
-serde = { version = "1.0.193", features = ["derive"] }
+serde_json = "1.0.128"
+serde = { version = "1.0.210", features = ["derive"] }
 log = "0.4.20"
 env_logger = "0.10.1"
-strum = { version = "0.25.0", features = ["derive"] }
-strum_macros = "0.25.3"
+strum = { version = "0.26.3", features = ["derive"] }
+strum_macros = "0.26.4"
 reqwest = { version = "0.11.23", features = ["blocking"] }
 urlencoding = "2.1.3"
