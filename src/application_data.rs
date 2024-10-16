@@ -256,7 +256,9 @@ pub enum AirplayDeviceKind {
     Computer,
     AirportExpress,
     AppleTV,
+    #[serde(rename = "Airplay device")]
     AirplayDevice,
+    #[serde(rename = "Bluetooth device")]
     BluetoothDevice,
     HomePod,
     Unknown,

@@ -106,3 +106,4 @@ pub use apple_music::*;
 pub use application_data::*;
 pub use playlist::*;
 pub use track::*;
+pub use error::*;
