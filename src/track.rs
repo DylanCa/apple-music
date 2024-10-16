@@ -33,8 +33,8 @@ pub struct Track {
     /// Is the album for this track disliked?
     pub album_disliked: bool,
 
-    /// Is the album for this track loved?
-    pub album_loved: bool,
+    /// Is the album for this track favorited?
+    pub album_favorited: bool,
 
     /// The rating of the album for this track (0 to 100)
     pub album_rating: Option<i16>,
@@ -132,8 +132,8 @@ pub struct Track {
     /// The long description of the track
     pub long_description: Option<String>,
 
-    /// Is this track loved?
-    pub loved: bool,
+    /// Is this track favorited?
+    pub favorited: bool,
 
     /// The lyrics of the track
     pub lyrics: Option<String>,
@@ -301,10 +301,10 @@ impl Track {
         Ok(())
     }
 
-    /// Loves / "Unloves" a Track.
-    pub fn set_loved(&self, value: bool) -> Result<(), Error> {
+    /// Favorites / "Unfavorites" a Track.
+    pub fn set_favorited(&self, value: bool) -> Result<(), Error> {
         let cmd = format!(
-            "Application('Music').tracks.byId({}).loved = {}",
+            "Application('Music').tracks.byId({}).favorited = {}",
             self.id, value
         );
 
@@ -350,7 +350,6 @@ impl Track {
         }
     }
 
-
     fn fetch_itunes_store_by_request(&mut self, request: String) {
         let mut res = reqwest::blocking::get(request).unwrap();
         let mut body = String::new();
@@ -361,22 +360,19 @@ impl Track {
                 self.artwork_url = Some(search.results[0].clone().artwork_url_100);
                 self.track_url = Some(search.results[0].clone().track_view_url);
             } else {
-                let result = search
-                    .results
-                    .iter()
-                    .find(|result|
-                              ( &result.track_name.to_lowercase() == &self.name.to_lowercase()
-                                  || &result.track_censored_name.to_lowercase() == &self.name.to_lowercase() )
-                        && ( &result.artist_name.to_lowercase() == &self.artist.to_lowercase()
-                                  || &result.collection_name.to_lowercase() == &self.album.to_lowercase() )
-                    );
+                let result = search.results.iter().find(|result| {
+                    (&result.track_name.to_lowercase() == &self.name.to_lowercase()
+                        || &result.track_censored_name.to_lowercase() == &self.name.to_lowercase())
+                        && (&result.artist_name.to_lowercase() == &self.artist.to_lowercase()
+                            || &result.collection_name.to_lowercase() == &self.album.to_lowercase())
+                });
 
                 match result {
                     Some(data) => {
                         self.artwork_url = Some(data.clone().artwork_url_100);
                         self.track_url = Some(data.clone().track_view_url);
                     }
-                    None => { () }
+                    None => (),
                 }
             }
         }
