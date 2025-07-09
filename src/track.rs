@@ -83,7 +83,7 @@ pub struct Track {
     pub database_id: i32,
 
     /// The date the track was added to the playlist
-    pub date_added: String,
+    pub date_added: Option<String>,
 
     /// The description of the track
     pub description: String,
