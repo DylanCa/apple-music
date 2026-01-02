@@ -2,7 +2,7 @@
 _A Rust Library to fully control local MacOS Apple Music player._
 
 [![crates.io](https://img.shields.io/crates/v/apple-music.svg)](https://crates.io/crates/apple-music)
-[![maintenance-status](https://img.shields.io/badge/maintenance-actively--developed-brightgreen.svg)](https://crates.io/crates/apple-music)
+[![maintenance](https://img.shields.io/maintenance/yes/2024)](https://crates.io/crates/apple-music)
 [![docs.rs](https://img.shields.io/docsrs/apple-music)](https://docs.rs/apple-music/latest)
 
 This crate provides a convenient way of controlling a MacOS Apple Music player, fully through Rust code.
